@@ -12,11 +12,12 @@ use pgrx_sql_entity_graph::metadata::{
 };
 
 #[cfg(any(
-    feature = "pg16",
-    feature = "pg15",
-    feature = "pg14",
+    feature = "pg12",
     feature = "pg13",
-    feature = "pg12"
+    feature = "pg14",
+    feature = "pg15",
+    feature = "pg16",
+    feature = "pg17",
 ))]
 unsafe impl SqlTranslatable for crate::FunctionCallInfoBaseData {
     fn argument_sql() -> Result<SqlMapping, ArgumentError> {

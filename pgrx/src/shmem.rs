@@ -29,7 +29,7 @@ pub unsafe trait PGRXSharedMemory {}
 /// Custom types need to also implement the `PGRXSharedMemory` trait.
 ///
 /// > Extensions that use shared memory **must** be loaded via `postgresql.conf`'s
-/// `shared_preload_libraries` configuration setting.  
+/// `shared_preload_libraries` configuration setting.
 ///
 /// # Example
 ///
@@ -49,7 +49,7 @@ pub unsafe trait PGRXSharedMemory {}
 ///     pg_shmem_init!(ATOMIC);
 /// }
 /// ```
-#[cfg(not(any(feature = "pg15", feature = "pg16")))]
+#[cfg(not(any(feature = "pg15", feature = "pg16", feature = "pg17")))]
 #[macro_export]
 macro_rules! pg_shmem_init {
     ($thing:expr) => {
@@ -73,7 +73,7 @@ macro_rules! pg_shmem_init {
     };
 }
 
-#[cfg(any(feature = "pg15", feature = "pg16"))]
+#[cfg(any(feature = "pg15", feature = "pg16", feature = "pg17"))]
 #[macro_export]
 macro_rules! pg_shmem_init {
     ($thing:expr) => {

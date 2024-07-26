@@ -79,7 +79,8 @@ impl BackgroundWorker {
             feature = "pg13",
             feature = "pg14",
             feature = "pg15",
-            feature = "pg16"
+            feature = "pg16",
+            feature = "pg17",
         ))]
         const LEN: usize = 96;
 
@@ -198,7 +199,8 @@ impl BackgroundWorker {
                 feature = "pg13",
                 feature = "pg14",
                 feature = "pg15",
-                feature = "pg16"
+                feature = "pg16",
+                feature = "pg17",
             ))]
             pg_sys::BackgroundWorkerInitializeConnection(db, user, 0);
         };
@@ -625,7 +627,8 @@ impl<'a> From<&'a BackgroundWorkerBuilder> for pg_sys::BackgroundWorker {
             feature = "pg13",
             feature = "pg14",
             feature = "pg15",
-            feature = "pg16"
+            feature = "pg16",
+            feature = "pg17",
         ))]
         let bgw = pg_sys::BackgroundWorker {
             bgw_name: RpgffiChar::from(&builder.bgw_name[..]).0,
@@ -636,6 +639,9 @@ impl<'a> From<&'a BackgroundWorkerBuilder> for pg_sys::BackgroundWorker {
                 None => -1,
                 Some(d) => d.as_secs() as i32,
             },
+            #[cfg(feature = "pg17")]
+            bgw_library_name: RpgffiChar1024::from(&builder.bgw_library_name[..]).0,
+            #[cfg(not(feature = "pg17"))]
             bgw_library_name: RpgffiChar::from(&builder.bgw_library_name[..]).0,
             bgw_function_name: RpgffiChar::from(&builder.bgw_function_name[..]).0,
             bgw_main_arg: builder.bgw_main_arg,
@@ -667,43 +673,25 @@ fn wait_latch(timeout: libc::c_long, wakeup_flags: WLflags) -> i32 {
     feature = "pg13",
     feature = "pg14",
     feature = "pg15",
-    feature = "pg16"
+    feature = "pg16",
+    feature = "pg17",
 ))]
 type RpgffiChar = RpgffiChar96;
 
-#[allow(dead_code)]
-struct RpgffiChar64([c_char; 64]);
+struct RpgffiCharInner<const N: usize>([c_char; N]);
 
-impl<'a> From<&'a str> for RpgffiChar64 {
+impl<const N: usize> From<&str> for RpgffiCharInner<N> {
     fn from(string: &str) -> Self {
-        let mut r = [0; 64];
+        let mut r = [0; N];
         for (dest, src) in r.iter_mut().zip(string.as_bytes()) {
             *dest = *src as c_char;
         }
-        RpgffiChar64(r)
+        RpgffiCharInner(r)
     }
 }
 
-struct RpgffiChar96([c_char; 96]);
-
-impl<'a> From<&'a str> for RpgffiChar96 {
-    fn from(string: &str) -> Self {
-        let mut r = [0; 96];
-        for (dest, src) in r.iter_mut().zip(string.as_bytes()) {
-            *dest = *src as c_char;
-        }
-        RpgffiChar96(r)
-    }
-}
-
-struct RpgffiChar128([c_char; 128]);
-
-impl<'a> From<&'a str> for RpgffiChar128 {
-    fn from(string: &str) -> Self {
-        let mut r = [0; 128];
-        for (dest, src) in r.iter_mut().zip(string.as_bytes()) {
-            *dest = *src as c_char;
-        }
-        RpgffiChar128(r)
-    }
-}
+#[allow(unused)]
+type RpgffiChar64 = RpgffiCharInner<64>;
+type RpgffiChar96 = RpgffiCharInner<96>;
+type RpgffiChar128 = RpgffiCharInner<128>;
+type RpgffiChar1024 = RpgffiCharInner<1024>;

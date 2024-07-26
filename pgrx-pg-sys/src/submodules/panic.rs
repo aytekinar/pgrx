@@ -338,7 +338,7 @@ pub enum CaughtError {
 }
 
 impl CaughtError {
-    /// Rethrow this [CaughtError].  
+    /// Rethrow this [CaughtError].
     ///
     /// This is the same as [std::panic::resume_unwind()] and has the same semantics.
     pub fn rethrow(self) -> ! {
@@ -522,7 +522,7 @@ fn do_ereport(ereport: ErrorReportWithLevel) {
     /// In this case, we only allocate file, lineno and funcname if `errstart` returns true
     #[inline(always)]
     #[rustfmt::skip]    // my opinion wins
-    #[cfg(any(feature = "pg13", feature = "pg14", feature = "pg15", feature = "pg16"))]
+    #[cfg(any(feature = "pg13", feature = "pg14", feature = "pg15", feature = "pg16", feature = "pg17"))]
     fn do_ereport_impl(ereport: ErrorReportWithLevel) {
 
         extern "C" {

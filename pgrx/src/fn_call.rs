@@ -30,7 +30,7 @@ pub unsafe trait FnCallArg: Sealed {
     fn type_oid(&self) -> pg_sys::Oid;
 }
 
-/// The kinds of [`fn_call`] arguments.  
+/// The kinds of [`fn_call`] arguments.
 pub enum Arg<T> {
     /// The argument value is a SQL NULL
     Null,
@@ -397,7 +397,7 @@ fn lookup_fn(fname: &str, args: &[&dyn FnCallArg]) -> Result<pg_sys::Oid> {
                     pg_sys::pfree((*s).val.str_.cast());
                 }
 
-                #[cfg(any(feature = "pg15", feature = "pg16"))]
+                #[cfg(any(feature = "pg15", feature = "pg16", feature = "pg17"))]
                 {
                     let s = s.cast::<pg_sys::String>();
                     pg_sys::pfree((*s).sval.cast());
